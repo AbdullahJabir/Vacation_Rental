@@ -68,8 +68,8 @@
                        <td>{{$slider->title}}</td>
                        <td>{{$slider->description}}</td>
                        <td><img class="img-responsive img-thumbnail" src="{{ asset('uploads/slider/'.$slider->image) }}" style="height: 120px; width: 200px"></td>
-                       <td>{{$slider->created_at}}</td>
-                       <td>{{$slider->updated_at}}</td>
+                       <td>{{$slider->created_at->diffForHumans()}}</td>
+                       <td>{{$slider->updated_at->diffForHumans()}}</td>
                         <td>
                         <a href="{{ route('slider.edit',$slider->id) }}" class="btn btn-info btn-sm"><i class="material-icons">Edit</i></a>
 

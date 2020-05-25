@@ -363,12 +363,18 @@
     <section class="ftco-section bg-light">
             <div class="container">
                 <div class="row no-gutters">
+                    @foreach($vacation_rental as $key=>$slider)
                     <div class="col-md-6 wrap-about">
-                        <div class="img img-2 mb-4" style="background-image: url(images/about.jpg);">
+                 
+                        <div class="img img-2 mb-4" style="background-image: url({{ asset('uploads/slider/'.$slider->image) }});">
                         </div>
-                        <h2>{{$sliders->title}}</h2>
-                        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>
+                        <h2>{{$slider->title}}</h2>
+                        <p>{{$slider->description}}</p>
+
+                       
                     </div>
+
+                    @endforeach
                     <div class="col-md-6 wrap-about ftco-animate">
               <div class="heading-section">
                 <div class="pl-md-5">
@@ -621,4 +627,4 @@
 
     
   </body>
-</html>{{asset('                 
+</html>{{asset('
