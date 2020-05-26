@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
+use App\ApartmentRoom;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Studen;
-use Validator;
+use App\Http\Controllers\Controller;
 class ApartmentController extends Controller
 {
     /**
@@ -12,19 +14,8 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        if(request()->ajax())
-        {
-            return datatables()->of(Studen::latest()->get())
-                    ->addColumn('action', function($data){
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Edit</button>';
-                        $button .= '&nbsp;&nbsp;';
-                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-danger btn-sm">Delete</button>';
-                        return $button;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-        }
-        return view('apartment_room');
+        $apartment=ApartmentRoom::all();
+       return view('admin.apartment.index',compact('apartment'));
     }
 
     /**
@@ -34,7 +25,7 @@ class ApartmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.apartment.create');
     }
 
     /**
@@ -45,34 +36,34 @@ class ApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'first_name'    =>  'required',
-            'last_name'     =>  'required',
-            'image'         =>  'required|image|max:2048'
-        );
-
-        $error = Validator::make($request->all(), $rules);
-
-        if($error->fails())
-        {
-            return response()->json(['errors' => $error->errors()->all()]);
-        }
-
+        $this->validate($request,[
+            'room_name' => 'required',
+            'max_person' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,bmp,png',
+        ]);
         $image = $request->file('image');
-
-        $new_name = rand() . '.' . $image->getClientOriginalExtension();
-
-        $image->move(public_path('images'), $new_name);
-
-        $form_data = array(
-            'first_name'        =>  $request->first_name,
-            'last_name'         =>  $request->last_name,
-            'image'             =>  $new_name
-        );
-
-        Studen::create($form_data);
-
-        return response()->json(['success' => 'Data Added successfully.']);
+        $slug = str_slug($request->room_name);
+        if (isset($image))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            if (!file_exists('uploads/slider'))
+            {
+                mkdir('uploads/slider', 0777 , true);
+            }
+            $image->move('uploads/slider',$imagename);
+        }else {
+            $imagename = 'dafault.png';
+        }
+        $slider = new ApartmentRoom();
+        $slider->room_name = $request->room_name;
+        $slider->max_person = $request->max_person;
+        $slider->size = $request->size;
+        $slider->view = $request->view;
+        $slider->bed = $request->bed;
+        $slider->image = $imagename;
+        $slider->save();
+        return redirect()->route('apartment.index')->with('successMsg','Slider Successfully Saved');
     }
 
     /**
@@ -83,7 +74,7 @@ class ApartmentController extends Controller
      */
     public function show($id)
     {
-        //
+         
     }
 
     /**
@@ -94,11 +85,8 @@ class ApartmentController extends Controller
      */
     public function edit($id)
     {
-        if(request()->ajax())
-        {
-            $data = Studen::findOrFail($id);
-            return response()->json(['data' => $data]);
-        }
+        $apartment = ApartmentRoom::find($id);
+        return view('admin.apartment.edit',compact('apartment'));
     }
 
     /**
@@ -108,49 +96,37 @@ class ApartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $image_name = $request->hidden_image;
+        $this->validate($request,[
+            'room_name' => 'required',
+            'max_person' => 'required',
+            'image' => 'mimes:jpeg,jpg,bmp,png',
+        ]);
         $image = $request->file('image');
-        if($image != '')
+        $slug = str_slug($request->room_name);
+        $slider = ApartmentRoom::find($id);
+        if (isset($image))
         {
-            $rules = array(
-                'first_name'    =>  'required',
-                'last_name'     =>  'required',
-                'image'         =>  'image|max:2048'
-            );
-            $error = Validator::make($request->all(), $rules);
-            if($error->fails())
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            if (!file_exists('uploads/apartment'))
             {
-                return response()->json(['errors' => $error->errors()->all()]);
+                mkdir('uploads/apartment', 0777 , true);
             }
-
-            $image_name = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $image_name);
+            $image->move('uploads/apartment',$imagename);
+        }else {
+            $imagename = $slider->image;
         }
-        else
-        {
-            $rules = array(
-                'first_name'    =>  'required',
-                'last_name'     =>  'required'
-            );
-
-            $error = Validator::make($request->all(), $rules);
-
-            if($error->fails())
-            {
-                return response()->json(['errors' => $error->errors()->all()]);
-            }
-        }
-
-        $form_data = array(
-            'first_name'       =>   $request->first_name,
-            'last_name'        =>   $request->last_name,
-            'image'            =>   $image_name
-        );
-        Studen::whereId($request->hidden_id)->update($form_data);
-
-        return response()->json(['success' => 'Data is successfully updated']);
+        $slider->room_name = $request->room_name;
+        $slider->max_person = $request->max_person;
+        $slider->size = $request->size;
+        $slider->view = $request->view;
+        $slider->bed = $request->bed;
+        $slider->image = $imagename;
+        $slider->image = $imagename;
+        $slider->save();
+        return redirect()->route('apartment.index')->with('successMsg','Slider Successfully Updated');
     }
 
     /**
@@ -161,7 +137,12 @@ class ApartmentController extends Controller
      */
     public function destroy($id)
     {
-        $data = Studen::findOrFail($id);
-        $data->delete();
+        $slider = ApartmentRoom::find($id);
+        if (file_exists('uploads/apartment/'.$slider->image))
+        {
+            unlink('uploads/apartment/'.$slider->image);
+        }
+        $slider->delete();
+        return redirect()->back()->with('successMsg','Slider Successfully Deleted');
     }
 }

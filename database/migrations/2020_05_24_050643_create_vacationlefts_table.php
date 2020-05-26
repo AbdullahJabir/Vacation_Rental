@@ -33,3 +33,6 @@ class CreateVacationleftsTable extends Migration
         Schema::dropIfExists('vacationlefts');
     }
 }
+/*
+
+*/

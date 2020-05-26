@@ -20,17 +20,11 @@ Route::get('/admin', function () {
 });
 
 
-Route::resource('apartment', 'ApartmentController');
-
-Route::post('apartment/update', 'ApartmentController@update')->name('apartment.update');
-
-Route::get('apartment/destroy/{id}', 'ApartmentController@destroy');
-
 /*====================*/
-Route::get('ajaxdata', 'AjaxdataController@index')->name('ajaxdata');
+/*Route::get('ajaxdata', 'AjaxdataController@index')->name('ajaxdata');
 Route::get('ajaxdata/getdata', 'AjaxdataController@getdata')->name('ajaxdata.getdata');
 
-Route::post('ajaxdata/postdata', 'AjaxdataController@postdata')->name('ajaxdata.postdata');
+Route::post('ajaxdata/postdata', 'AjaxdataController@postdata')->name('ajaxdata.postdata');*/
 
 Route::resource('ajax-crud', 'AjaxCrudController');
 
@@ -42,3 +36,4 @@ Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
 /*Route::resource('slider','vacationleft');*/
 Route::resource('slider','SliderrController');
 
+Route::resource('apartment','ApartmentController');
