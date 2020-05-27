@@ -40,20 +40,15 @@
                           ID
                         </th>
                         <th >
-                          Room Name</th>
+                          Client Name</th>
                         <th >
-                         Max Person
+                         Title
                         </th>
 
                         <th >
-                         Roome Size
+                         Description
                         </th>
-                        <th >
-                         View
-                        </th>
-                        <th >
-                         Bed Num
-                        </th>
+                       
                         <th >
                           Image
                         </th>

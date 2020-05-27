@@ -37,7 +37,7 @@
                       <div class="col-md-12" styl>
                         <div class="form-group">
                           <label class="bmd-label-floating">description</label>
-                          <textarea class="form-control"  name="description"id="comment"></textarea>
+                          <textarea class="form-control" maxlength="550" name="description"id="comment" placeholder="maxlength 550 character"></textarea>
                           <!-- <input type="text" class="form-control" name="description"> -->
                         </div>
                       </div>
