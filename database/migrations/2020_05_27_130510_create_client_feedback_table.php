@@ -17,8 +17,8 @@ class CreateClientFeedbackTable extends Migration
             $table->bigIncrements('id');
             $table->string('client_name');
             $table->string('client_title');
-            $table->string('client_description');
-            
+            $table->text('client_description');
+             $table->string('image');
             $table->integer('status');
             $table->timestamps();
         });

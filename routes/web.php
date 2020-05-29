@@ -39,6 +39,10 @@ Route::resource('slider','SliderrController');
 Route::resource('apartment','ApartmentController');
 
 /*latestnews*/
-Route::resource('latest','LatestnewsController');
+/*Route::resource('latest','LatestnewsController');*/
 
 Route::resource('client','ClientsFeedbackController');
+
+Route::resource('blog','LatestnewsController');
+
+Route::get('/status/update', 'LatestnewsController@updateStatus')->name('users.update.status');

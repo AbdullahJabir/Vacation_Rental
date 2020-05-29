@@ -60,6 +60,20 @@
       </div>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiess" aria-expanded="true" aria-controls="collapseUtilities">
+        <i class="fas fa-fw fa-wrench"></i>
+        <span>Latest Blog</span>
+      </a>
+      <div id="collapseUtilitiess" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <h6 class="collapse-header">Blog</h6>
+          <a class="collapse-item" href="{{route('blog.create')}}">Add Room</a>
+          <a class="collapse-item" href="{{route('blog.index')}}">View All</a>
+          
+        </div>
+      </div>
+    </li>
     <!-- Divider -->
     <hr class="sidebar-divider">
 

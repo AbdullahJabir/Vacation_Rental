@@ -102,7 +102,7 @@ class ClientsFeedbackController extends Controller
         $this->validate($request,[
             'client_name' => 'required',
             'client_title' => 'required',
-            'image' => 'mimes:jpeg,jpg,bmp,png',
+            
         ]);
         $image = $request->file('image');
         $slug = str_slug($request->room_name);
@@ -111,11 +111,11 @@ class ClientsFeedbackController extends Controller
         {
             $currentDate = Carbon::now()->toDateString();
             $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
-            if (!file_exists('uploads/apartment'))
+            if (!file_exists('uploads/client'))
             {
-                mkdir('uploads/apartment', 0777 , true);
+                mkdir('uploads/client', 0777 , true);
             }
-            $image->move('uploads/apartment',$imagename);
+            $image->move('uploads/client',$imagename);
         }else {
             $imagename = $slider->image;
         }

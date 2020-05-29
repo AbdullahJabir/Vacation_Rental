@@ -49,7 +49,7 @@
                          Description
                         </th>
                         
-                        <th >
+                        <th style="width: 20%" >
                           Image
                         </th>
                         <th >
@@ -73,7 +73,7 @@
                        <td>{{$slider->client_description}}</td>
                       
                        
-                        <td><img class="img-responsive img-thumbnail" src="{{ asset('uploads/slider/'.$slider->image) }}" style="height: 120px; width: 200px"></td>
+                        <td><img class="img-responsive img-thumbnail" src="{{ asset('uploads/client/'.$slider->image) }}" style="height: 120px; width: 200px"></td>
                        <td>{{$slider->created_at->diffForHumans()}}</td>
                        <td>{{$slider->updated_at->diffForHumans()}}</td>
                         <td>

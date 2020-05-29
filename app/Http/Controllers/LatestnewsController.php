@@ -1,8 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use App\LatestBlog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class LatestnewsController extends Controller
 {
@@ -13,7 +14,8 @@ class LatestnewsController extends Controller
      */
     public function index()
     {
-       return view('admin.LatestNews.index');
+        $apartment=LatestBlog::all();
+       return view('admin.blog.index',compact('apartment'));
     }
 
     /**
@@ -23,7 +25,7 @@ class LatestnewsController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.blog.create');
     }
 
     /**
@@ -34,7 +36,33 @@ class LatestnewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            
+            'title' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,bmp,png',
+        ]);
+        $image = $request->file('image');
+        $slug = str_slug($request->room_name);
+        if (isset($image))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            if (!file_exists('uploads/blog'))
+            {
+                mkdir('uploads/blog', 0777 , true);
+            }
+            $image->move('uploads/blog',$imagename);
+        }else {
+            $imagename = 'dafault.png';
+        }
+        $slider = new LatestBlog();
+        
+        $slider->title = $request->title;
+        $slider->description = $request->description;
+        
+        $slider->image = $imagename;
+        $slider->save();
+        return redirect()->route('blog.index')->with('successMsg','Slider Successfully Saved');
     }
 
     /**
@@ -45,7 +73,7 @@ class LatestnewsController extends Controller
      */
     public function show($id)
     {
-        //
+         
     }
 
     /**
@@ -56,7 +84,8 @@ class LatestnewsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $apartment = LatestBlog::find($id);
+        return view('admin.blog.edit',compact('apartment'));
     }
 
     /**
@@ -68,7 +97,33 @@ class LatestnewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            
+            'title' => 'required',
+            
+        ]);
+        $image = $request->file('image');
+        $slug = str_slug($request->room_name);
+        $slider = LatestBlog::find($id);
+        if (isset($image))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $imagename = $slug .'-'. $currentDate .'-'. uniqid() .'.'. $image->getClientOriginalExtension();
+            if (!file_exists('uploads/blog'))
+            {
+                mkdir('uploads/blog', 0777 , true);
+            }
+            $image->move('uploads/blog',$imagename);
+        }else {
+            $imagename = $slider->image;
+        }
+       
+        $slider->title = $request->title;
+        $slider->description = $request->description;
+        $slider->image = $imagename;
+       /* $slider->image = $imagename;*/
+        $slider->save();
+        return redirect()->route('blog.index')->with('successMsg','Slider Successfully Updated');
     }
 
     /**
@@ -79,6 +134,22 @@ class LatestnewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $slider = LatestBlog::find($id);
+        if (file_exists('uploads/blog/'.$slider->image))
+        {
+            unlink('uploads/blog/'.$slider->image);
+        }
+        $slider->delete();
+        return redirect()->back()->with('successMsg','Slider Successfully Deleted');
     }
+
+
+    public function updateStatus(Request $request)
+{
+    $user = LatestBlog::findOrFail($request->user_id);
+    $user->status = $request->status;
+    $user->save();
+
+    return response()->json(['message' => 'User status updated successfully.']);
+}
 }
