@@ -1,56 +1,169 @@
 <?php
 namespace App\Http\Controllers;
-use Validator;
 use Illuminate\Http\Request;
-use App\Student;
-use Datatables;
+use App\AjaxCrud;
+use Validator;
 
-class AjaxdataController extends Controller
+class AjaxCrudController extends Controller
 {
-    function index()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-     return view('student.ajaxdata');
-     //http://127.0.0:8000/ajaxdata
-    }
-
-    function getdata()
-    {
-     $students = Student::select('first_name', 'last_name');
-     return Datatables::of($students)->make(true);
-    }
-
-    function postdata(Request $request)
-    {
-        $validation = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name'  => 'required',
-        ]);
-
-        $error_array = array();
-        $success_output = '';
-        if ($validation->fails())
+        if(request()->ajax())
         {
-            foreach($validation->messages()->getMessages() as $field_name => $messages)
+            return datatables()->of(AjaxCrud::latest()->get())
+                    ->addColumn('action', function($data){
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Edit</button>';
+                        $button .= '&nbsp;&nbsp;';
+                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-danger btn-sm">Delete</button>';
+                        return $button;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+        return view('ajax_index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $rules = array(
+            'first_name'    =>  'required',
+            'last_name'     =>  'required',
+            'image'         =>  'required|image|max:2048'
+        );
+
+        $error = Validator::make($request->all(), $rules);
+
+        if($error->fails())
+        {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+
+        $image = $request->file('image');
+
+        $new_name = rand() . '.' . $image->getClientOriginalExtension();
+
+        $image->move(public_path('images'), $new_name);
+
+        $form_data = array(
+            'first_name'        =>  $request->first_name,
+            'last_name'         =>  $request->last_name,
+            'description'         =>  $request->description,
+            'image'             =>  $new_name
+        );
+
+        AjaxCrud::create($form_data);
+
+        return response()->json(['success' => 'Data Added successfully.']);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        if(request()->ajax())
+        {
+            $data = AjaxCrud::findOrFail($id);
+            return response()->json(['data' => $data]);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $image_name = $request->hidden_image;
+        $image = $request->file('image');
+        if($image != '')
+        {
+            $rules = array(
+                'first_name'    =>  'required',
+                'last_name'     =>  'required',
+                'image'         =>  'image|max:2048'
+            );
+            $error = Validator::make($request->all(), $rules);
+            if($error->fails())
             {
-                $error_array[] = $messages;
+                return response()->json(['errors' => $error->errors()->all()]);
             }
+
+            $image_name = rand() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $image_name);
         }
         else
         {
-            if($request->get('button_action') == "insert")
+            $rules = array(
+                'first_name'    =>  'required',
+                'last_name'     =>  'required'
+            );
+
+            $error = Validator::make($request->all(), $rules);
+
+            if($error->fails())
             {
-                $student = new Student([
-                    'first_name'    =>  $request->get('first_name'),
-                    'last_name'     =>  $request->get('last_name')
-                ]);
-                $student->save();
-                $success_output = '<div class="alert alert-success">Data Inserted</div>';
+                return response()->json(['errors' => $error->errors()->all()]);
             }
         }
-        $output = array(
-            'error'     =>  $error_array,
-            'success'   =>  $success_output
+
+        $form_data = array(
+            'first_name'       =>   $request->first_name,
+            'last_name'        =>   $request->last_name,
+            'image'            =>   $image_name
         );
-        echo json_encode($output);
+        AjaxCrud::whereId($request->hidden_id)->update($form_data);
+
+        return response()->json(['success' => 'Data is successfully updated']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $data = AjaxCrud::findOrFail($id);
+        $data->delete();
     }
 }

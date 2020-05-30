@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AjaxCrud extends Model
 {
-    protected $fillable = [
-     'first_name', 'last_name','description' ,'image'
+   protected $fillable = [
+     'first_name', 'last_name', 'description','status','image'
     ];
 }

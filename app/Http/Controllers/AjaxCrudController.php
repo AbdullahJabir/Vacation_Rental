@@ -49,7 +49,6 @@ class AjaxCrudController extends Controller
         $rules = array(
             'first_name'    =>  'required',
             'last_name'     =>  'required',
-            'description' =>'required',
             'image'         =>  'required|image|max:2048'
         );
 
@@ -69,8 +68,8 @@ class AjaxCrudController extends Controller
         $form_data = array(
             'first_name'        =>  $request->first_name,
             'last_name'         =>  $request->last_name,
-            'image'             =>  $new_name,
-            'description'  =>$request->description,
+            'description'         =>  $request->description,
+            'image'             =>  $new_name
         );
 
         AjaxCrud::create($form_data);
@@ -149,7 +148,6 @@ class AjaxCrudController extends Controller
         $form_data = array(
             'first_name'       =>   $request->first_name,
             'last_name'        =>   $request->last_name,
-            "description" =>$request->description,
             'image'            =>   $image_name
         );
         AjaxCrud::whereId($request->hidden_id)->update($form_data);

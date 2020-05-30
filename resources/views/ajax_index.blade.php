@@ -1,50 +1,32 @@
-<!-- <html>
+<html>
  <head>
- 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Laravel 5.8 - DataTables Server Side Processing using Ajax</title>
-  
- 
- 
- </head>
- <body> 
-  -->
-
-  
- 
-  @extends('layouts.app')
-
-@section('title','Slider')
-@push('css')
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>  
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> 
-     -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" /> 
-@endpush
-
-@section('main-content') 
-
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+ </head>
+ <body>
   <div class="container">    
-    <!--  <br />
+     <br />
      <h3 align="center">Laravel 5.8 Ajax Crud Tutorial - Delete or Remove Data</h3>
-     <br /> -->
+     <br />
      <div align="right">
       <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
-      
      </div>
      <br />
-    
    <div class="table-responsive">
     <table class="table table-bordered table-striped" id="user_table">
            <thead>
             <tr>
                 <th width="10%">Image</th>
-                <th width="10%">First Name</th>
-                <th width="10%">Last Name</th>
-                <th width="20%">Description</th>
-                
-                <th width="10%">Action</th>
+                <th width="15%">First Name</th>
+                <th width="25%">Last Name</th>
+                <th width="20%">Name</th>
+                <th width="30%">Action</th>
             </tr>
            </thead>
        </table>
@@ -77,14 +59,13 @@
             <div class="col-md-8">
              <input type="text" name="last_name" id="last_name" class="form-control" />
             </div>
-           </div>
 
-           <div class="form-group">
+             <div class="form-group">
             <label class="control-label col-md-4">Description : </label>
             <div class="col-md-8">
-
-             <textarea type="text" name="description" id="description" class="form-control" ></textarea> 
+             <textarea class="form-control" maxlength="550" name="description"id="comment" placeholder="maxlength 550 character"></textarea>
             </div>
+
            </div>
            <div class="form-group">
             <label class="control-label col-md-4">Select Profile Image : </label>
@@ -121,16 +102,9 @@
             </div>
         </div>
     </div>
+</div>
 
-@endsection
-@push('scripts')
-  
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+
 <script>
 $(document).ready(function(){
 
@@ -174,7 +148,6 @@ $(document).ready(function(){
      $('#action_button').val("Add");
      $('#action').val("Add");
      $('#formModal').modal('show');
-
  });
 
  $('#sample_form').on('submit', function(event){
@@ -256,9 +229,9 @@ $(document).ready(function(){
    success:function(html){
     $('#first_name').val(html.data.first_name);
     $('#last_name').val(html.data.last_name);
-    $('#description').val(html.data.description);
     $('#store_image').html("<img src={{ URL::to('/') }}/images/" + html.data.image + " width='70' class='img-thumbnail' />");
     $('#store_image').append("<input type='hidden' name='hidden_image' value='"+html.data.image+"' />");
+    $('#last_name').val(html.data.description);
     $('#hidden_id').val(html.data.id);
     $('.modal-title').text("Edit New Record");
     $('#action_button').val("Edit");
@@ -293,4 +266,3 @@ $(document).ready(function(){
 
 });
 </script>
-@endpush
