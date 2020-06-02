@@ -1,3 +1,4 @@
+
 <html>
  <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,6 +27,7 @@
                 <th width="15%">First Name</th>
                 <th width="25%">Last Name</th>
                 <th width="20%">Name</th>
+                <th width="10%">Status</th>
                 <th width="30%">Action</th>
             </tr>
            </thead>

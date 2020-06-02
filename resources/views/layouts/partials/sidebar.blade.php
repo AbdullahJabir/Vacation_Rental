@@ -37,9 +37,9 @@
         <div class="bg-white py-2 collapse-inner rounded">
           <h6 class="collapse-header">Custom Services:</h6>
           <a class="collapse-item" href="{{ route('ajax-crud.index') }}">All Services</a>
-          <!-- <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button> -->
+           <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button> 
    
-         <!--  <a class="collapse-item" href="{{ route('ajax-crud.store') }}" id="create_record">Add Service</a> -->
+          <!-- <a class="collapse-item" href="{{ route('ajax-crud.create') }}" id="create_record">Add Service</a> --> 
         </div>
       </div>
     </li>
@@ -126,3 +126,4 @@
 
   </ul>
   <!-- End of Sidebar -->
+

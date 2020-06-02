@@ -82,7 +82,12 @@
                         <td><img class="img-responsive img-thumbnail" src="{{ asset('uploads/slider/'.$slider->image) }}" style="height: 120px; width: 200px"></td>
                        <td>{{$slider->created_at->diffForHumans()}}</td>
                        <td>{{$slider->updated_at->diffForHumans()}}</td>
+
+
                         <td>
+                    <a><button class="btn btn-danger" onclick="deleteData({{ $slider->id }})" type="submit">Delete</button></a>
+                </td>
+                        <!-- <td>
                         <a href="{{ route('apartment.edit',$slider->id) }}" class="btn btn-info btn-sm"><i class="material-icons">Edit</i></a>
 
                           <form id="delete-form-{{ $slider->id }}" action="{{ route('apartment.destroy',$slider->id) }}" style="display: none;" method="POST">
@@ -95,7 +100,8 @@
                                   }else {
                                                     event.preventDefault();
                                           }"><i class="material-icons">delete</i></button>
-                                              </td>
+                                              </td> -->
+
                    </tr>
 
                        @endforeach
@@ -118,10 +124,65 @@
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script>
 	$(document).ready(function() {
     $('#table').DataTable();
 } );
+
+
+   $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        function deleteData(id){
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this imaginary file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url : "{{ url('apartment') }}" + '/' + id,
+                        type : "POST",
+                        data : {'_method' : 'DELETE'},
+                       /* success: function(){
+                            swal({
+                                title: "Success!",
+                                text : "Post has been deleted \n Click OK to refresh the page",
+                                icon : "success",
+                            },
+                            function(){ 
+                                location.reload();
+                            });
+                        },*/
+                          success: function(){
+                            swal({
+                                title: "Success!",
+                                text : "Post has been deleted \n Click OK to refresh the page",
+                                icon : "success",
+                            }).then(function() {
+                                location.reload();
+                            });
+                        },
+                        error : function(){
+                            swal({
+                                title: 'Opps...',
+                                text : data.message,
+                                type : 'error',
+                                timer : '1500'
+                            })
+                        }
+                    })
+                } else {
+                swal("Your imaginary file is safe!");
+                }
+            });
+        }
 </script>
 
 @endpush

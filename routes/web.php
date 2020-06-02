@@ -37,7 +37,7 @@ Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
 Route::resource('slider','SliderrController');
 
 Route::resource('apartment','ApartmentController');
-
+/*Route::post('apartment/destroy/{id}','ApartmentController@destroy');*/
 /*latestnews*/
 /*Route::resource('latest','LatestnewsController');*/
 
